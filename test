@@ -1,0 +1,21 @@
+#!/bin/bash
+source "lum.l"; STARTLUMFRAMEWORK
+Class test_class {
+	$self_hui=dfgdfg
+
+	$..file() {
+		echo $$self_hui;
+	}f
+
+	$..calc() {
+		echo $(( $1 + $2 ));
+	}f
+
+}c
+
+New test_class hui;
+
+
+if ( $1 == "hui" ) {
+	hui.file;
+}i
