@@ -1,10 +1,10 @@
 #!/bin/bash
 source "lum.l"; STARTLUMFRAMEWORK
 Class test_class {
-	$self_hui=dfgdfg
+	$self_test=dfgdfg
 
 	$..file() {
-		echo $$self_hui;
+		echo $$self_test;
 	}f
 
 	$..calc() {
@@ -13,9 +13,9 @@ Class test_class {
 
 }c
 
-New test_class hui;
+New test_class test;
 
 
-if ( $1 == "hui" ) {
-	hui.file;
+if ( $1 == "test" ) {
+	test.file;
 }i
