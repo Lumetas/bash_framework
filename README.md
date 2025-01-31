@@ -38,11 +38,10 @@ while (true) {
 ```
 
 Закрывающая скобка должна иметь указатель на то какой блок она закрывает:
-
-}f (function)
-}c (class)
-}l (loop)
-}i (if)
+- }f (function)
+- }c (class)
+- }l (loop)
+- }i (if)
 
 
 
