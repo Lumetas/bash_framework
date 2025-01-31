@@ -18,7 +18,7 @@ Class test_class {
 
 ```
 
-Для создания класса используется Class После вы указываете его название и открываете фигурные скобки. Для создания методов можно использовать как `$self.method() {}f` так и `$..method() {}f`, Для свойств: `$self_property`. так же можно использовать метод: `$self.property.set $property $value | $..property.set $property $value` и для получения: `$$self_property | $self.property.get $property | $..property.get $property`
+Для создания класса используется Class После вы указываете его название и открываете фигурные скобки. Для создания методов можно использовать как `$self.method() {}f` так и `$..method() {}f`, Для свойств: `$self_property`. так же можно использовать метод: `$self.property.set $property $value` | `$..property.set $property $value` и для получения: `$$self_property` | `$self.property.get $property` | `$..property.get $property`
 
 Ветвления if else выглядят так:
 ```
