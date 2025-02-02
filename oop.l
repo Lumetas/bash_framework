@@ -5,8 +5,6 @@ function Class {
 
 }
 
-
-
 function New {
 
 	local class_content="${!1}"
@@ -55,7 +53,6 @@ function class_prepare {
 
 	local props="${props//\$self/$2}"
 	
-	echo -e "$props"
-	echo -e "$class_content";
+	echo -e "$props\n$class_content";
 
 }
