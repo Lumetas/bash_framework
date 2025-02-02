@@ -2,14 +2,21 @@
 source "lum.l"; STARTLUMFRAMEWORK
 
 Class test {
-	$..server() {
-		echo test;
-		echo $GET_test;
-	}f
+        $..server() {
+                if ( "$http_location" == "/html" ) {
+                        $..html;
+                } else if ( "$http_location" == "/test" ) {
+                        set;
+                } else {
+                        echo "is a bash http server!";
+                }i
+        }f
+
+        $..html() {
+                cat html;
+        }f
+
 }c
 
 
-
-if ( "$(echo 123 | md5sum)" != 123 ) {
-	HOST=localhost PORT=8080 http_server test;
-}i
+HOST=localhost PORT=8081 http_server test;
