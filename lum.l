@@ -32,7 +32,12 @@ sed -E '
 '
 }
 
+function include {
+	. <(transform_syntax < $1);
+}
+
 # Применяем преобразование и выводим результат
 . <(transform_syntax <<<"$(awk '/STARTLUMFRAMEWORK/{flag=1;next} flag' $0)")
 exit;
 # transform_syntax < "$file_path"
+
