@@ -3,6 +3,11 @@ source "lum.l"; STARTLUMFRAMEWORK
 
 Class test {
         $..server() {
+                echo "Content-Type: text/html"
+                echo "testcook=$GET_cook;"
+                echo "200"
+
+
                 if ( "$http_location" == "/html" ) {
                         $..html;
                 } else if ( "$http_location" == "/test" ) {
