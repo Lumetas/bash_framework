@@ -28,10 +28,10 @@ while (true) {
 
 ```
 Class test_class {
-	$self_hui=dfgdfg
+	$self_test=dfgdfg
 
 	$..file() {
-		echo $$self_hui;
+		echo $$self_test;
 	}f
 
 	$..calc() {

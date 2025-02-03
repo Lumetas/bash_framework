@@ -4,24 +4,20 @@ source "lum.l"; STARTLUMFRAMEWORK
 Class test {
         $..server() {
                 echo "Content-Type: text/html"
-                echo "testcook=$GET_cook;"
+                echo ""
                 echo "200"
+				
+				declare -A obj;
 
+				json.decode obj < json;
 
-                if ( "$http_location" == "/html" ) {
-                        $..html;
-                } else if ( "$http_location" == "/test" ) {
-                        set;
-                } else {
-                        echo "is a bash http server!";
-                }i
+				obj[key1]="key 1 value";
+
+				json.encode obj;
+
         }f
 
-        $..html() {
-                cat html;
-        }f
 
 }c
-
 
 HOST=localhost PORT=8080 http_server test;
