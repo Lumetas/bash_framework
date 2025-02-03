@@ -29,7 +29,12 @@ function New {
 
 	. <( echo -e "$props" )
 	. <( echo -e "$class_content" )
-
+	
+	obj_name="$2";
+	shift 2;
+	if declare -F "$obj_name.construct" > /dev/null; then
+		eval "$obj_name.construct $@";
+	fi
 }
 
 function class_prepare {
