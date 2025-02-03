@@ -53,6 +53,6 @@ function class_prepare {
 
 	local props="${props//\$self/$2}"
 	
-	echo -e "$props\n$class_content";
+	echo -e "$3\n$props\n$class_content";
 
 }
