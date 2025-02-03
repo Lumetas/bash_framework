@@ -137,7 +137,7 @@ HOST=localhost PORT=8080 http_server test;
 ### Установка.
 Склонируйте репозиторий, выдайте права на исполнение файлу `install`, запустите и выберите как вы хотите установить фреймворк, локально или глобально.
 ```
-https://github.com/Lumetas/bash_framework.git
+git clone https://github.com/Lumetas/bash_framework.git
 cd bash_framework
 chmod +x install
 ./install
