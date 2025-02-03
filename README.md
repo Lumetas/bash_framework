@@ -44,6 +44,9 @@ Class test_class {
 
 Для создания класса используется Class После вы указываете его название и открываете фигурные скобки. Для создания методов можно использовать как `$self.method() {}f` так и `$..method() {}f`, Для свойств: `$self_property`. так же можно использовать метод: `$self.property.set $property $value` | `$..property.set $property $value` и для получения: `$$self_property` | `$self.property.get $property` | `$..property.get $property`
 
+Конструктор класса задаётся методом `construct`. При использовании `New <class_name> <obj_name> <arguments>` все аргументы после class_name и obj_name будут переданы в конструктор класса если таковой имеется.
+
+
 Ветвления if else выглядят так:
 ```
 if ($1 == 1) {
