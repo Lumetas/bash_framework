@@ -1,19 +1,22 @@
 #!/bin/bash
-echo install global or local?(g/l);
-read -n 1 answer;
+echo "install global or local?(g/l)"
+read -n 1 answer
+echo ""  # Перенос на новую строку после ввода
 
 function build_all {
-	loc=$(pwd);
-	cd lib;
-	for file in ./*; do go build $file; done
-	cd $loc;
+  loc=$(pwd)
+  cd lib
+  for file in ./*; do
+    go build "$file"
+  done
+  cd "$loc"
 }
 
-if [[ $answer == "g" ]];then
-	build_all;
-	sudo find ./lib/ -type f ! -name "*.go" -exec mv {} /bin/ \;
-	sudo cp *\.l /bin
+if [[ $answer == "g" ]]; then
+  build_all
+  sudo find ./lib/ -type f ! -name "*.go" -exec mv {} /bin/ \;
+  sudo cp *.l /bin
 else
-	build_all;
-	find . -type f -name "*.l" -exec sed -i 's/lum_framework_/./lib/lum_framework_/g' {} +
+  build_all
+  find . -type f -name "*.l" -exec sed -i 's/lum_framework_/\.\/lib\/lum_framework_/g' {} +
 fi
