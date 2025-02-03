@@ -1,0 +1,19 @@
+#!/bin/bash
+echo install global or local?(g/l);
+read -n 1 answer;
+
+function build_all {
+	loc=$(pwd);
+	cd lib;
+	for file in ./*; do go build $file; done
+	cd $loc;
+}
+
+if [[ $answer == "g" ]];then
+	build_all;
+	sudo find ./lib/ -type f ! -name "*.go" -exec mv {} /bin/ \;
+	sudo cp *\.l /bin
+else
+	build_all;
+	find . -type f -name "*.l" -exec sed -i 's/lum_framework_/./lib/lum_framework_/g' {} +
+fi
