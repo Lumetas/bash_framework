@@ -9,7 +9,7 @@ Class test {
 				
 				declare -A obj;
 
-				json.decode obj < json;
+				json.decode obj < test.json;
 
 				obj[key1]="key 1 value";
 
