@@ -1,6 +1,7 @@
 #!/bin/bash
 source "modules.l"
 export LUMFRAMEWORKVERSION=0.5
+shopt -s expand_aliases
 
 if [[ "${BASH_SOURCE[0]}" != "${0}" ]]; then
 	. <(transform_syntax <<<"$(awk '/STARTLUMFRAMEWORK/{flag=1;next} flag' $0)")
@@ -14,6 +15,6 @@ else
 		chmod +x install;
 		rm test README.md test.json;
 		echo l | ./install;
-fi
+	fi
 fi
 
