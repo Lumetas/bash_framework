@@ -12,7 +12,7 @@ else
 		git clone https://github.com/Lumetas/bash_framework.git "$2";
 		cd "$2";
 		chmod +x install;
-		rm test README.md;
+		rm test README.md test.json;
 		echo l | ./install;
 fi
 fi
