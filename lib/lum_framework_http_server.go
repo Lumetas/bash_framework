@@ -9,6 +9,7 @@ import (
 	"os/exec"
 	"strconv"
 	"strings"
+	"sync"
 )
 
 func main() {
@@ -30,93 +31,109 @@ func main() {
 
 	// Создаем HTTP-обработчик
 	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-		// Получаем параметры запроса и заголовки
-		getValues := r.URL.Query()
-		postValues := r.Form
-		httpLocation := r.URL.Path
+		// Используем WaitGroup для ожидания завершения горутины
+		var wg sync.WaitGroup
+		wg.Add(1)
 
-		// Устанавливаем переменные окружения
-		os.Setenv("http_location", httpLocation)
+		// Обработка запроса в горутине
+		go func() {
+			defer wg.Done() // Уведомляем WaitGroup о завершении
 
-		// Устанавливаем GET и POST параметры
-		for key, values := range getValues {
-			os.Setenv("GET_"+key, strings.Join(values, ","))
-		}
-		for key, values := range postValues {
-			os.Setenv("POST_"+key, strings.Join(values, ","))
-		}
+			// Получаем параметры запроса и заголовки
+			getValues := r.URL.Query()
+			postValues := r.Form
+			httpLocation := r.URL.Path
 
-		// Устанавливаем заголовки из запроса
-		for key, values := range r.Header {
-			os.Setenv("HEADER_"+key, strings.Join(values, ", "))
-		}
+			// Устанавливаем переменные окружения
+			os.Setenv("http_location", httpLocation)
 
-		// Устанавливаем куки
-		for _, cookie := range r.Cookies() {
-			os.Setenv("COOKIE_"+cookie.Name, cookie.Value)
-		}
-
-		// Выполняем команду app_server.server с установленными переменными
-		cmd := exec.Command("bash", "-c", string(inputData)+"\napp_server.server")
-		var out bytes.Buffer
-		var stderr bytes.Buffer
-		cmd.Stdout = &out
-		cmd.Stderr = &stderr
-
-		if err := cmd.Run(); err != nil {
-			http.Error(w, stderr.String(), http.StatusInternalServerError)
-			return
-		}
-
-		// Парсинг вывода команды
-		outputLines := strings.Split(out.String(), "\n")
-		if len(outputLines) < 3 {
-			http.Error(w, "error, headers not set", http.StatusInternalServerError)
-			return
-		}
-
-		// Получаем заголовки, куки и код состояния
-		headersLine := outputLines[0]
-		cookiesLine := outputLines[1]
-		statusCodeLine := outputLines[2]
-
-		// Устанавливаем заголовки
-		for _, header := range strings.Split(headersLine, ";") {
-			parts := strings.SplitN(header, ":", 2)
-			if len(parts) == 2 {
-				w.Header().Set(strings.TrimSpace(parts[0]), strings.TrimSpace(parts[1]))
+			// Устанавливаем GET и POST параметры
+			for key, values := range getValues {
+				os.Setenv("GET_"+key, strings.Join(values, ","))
 			}
-		}
-
-		// Устанавливаем куки
-		for _, cookie := range strings.Split(cookiesLine, ";") {
-			parts := strings.SplitN(cookie, "=", 2)
-			if len(parts) == 2 {
-				http.SetCookie(w, &http.Cookie{
-					Name:  strings.TrimSpace(parts[0]),
-					Value: strings.TrimSpace(parts[1]),
-				})
+			for key, values := range postValues {
+				os.Setenv("POST_"+key, strings.Join(values, ","))
 			}
-		}
 
-		// Устанавливаем код состояния
-		statusCode, err := strconv.Atoi(strings.TrimSpace(statusCodeLine))
-		if err == nil {
-			w.WriteHeader(statusCode)
-		}
-
-		// Возвращаем остальной вывод команды пользователю
-		for _, line := range outputLines[3:] {
-			if strings.TrimSpace(line) != "" {
-				fmt.Fprint(w, line+"\n")
+			// Устанавливаем заголовки из запроса
+			for key, values := range r.Header {
+				os.Setenv("HEADER_"+key, strings.Join(values, ", "))
 			}
-		}
+
+			// Устанавливаем куки
+			for _, cookie := range r.Cookies() {
+				os.Setenv("COOKIE_"+cookie.Name, cookie.Value)
+			}
+
+			// Устанавливаем дополнительные переменные
+			os.Setenv("http_host", r.Host)               // Домен, к которому обратились
+			os.Setenv("http_user_ip", r.RemoteAddr)      // IP пользователя
+			os.Setenv("http_port", port)                // Порт, на который пришёл запрос
+
+			// Выполняем команду app_server.server с установленными переменными
+			cmd := exec.Command("bash", "-c", string(inputData)+"\napp_server.server")
+			var out bytes.Buffer
+			var stderr bytes.Buffer
+			cmd.Stdout = &out
+			cmd.Stderr = &stderr
+
+			if err := cmd.Run(); err != nil {
+				http.Error(w, stderr.String(), http.StatusInternalServerError)
+				return
+			}
+
+			// Парсинг вывода команды
+			outputLines := strings.Split(out.String(), "\n")
+			if len(outputLines) < 3 {
+				http.Error(w, "error, headers not set", http.StatusInternalServerError)
+				return
+			}
+
+			// Получаем заголовки, куки и код состояния
+			headersLine := outputLines[0]
+			cookiesLine := outputLines[1]
+			statusCodeLine := outputLines[2]
+
+			// Устанавливаем заголовки
+			for _, header := range strings.Split(headersLine, ";") {
+				parts := strings.SplitN(header, ":", 2)
+				if len(parts) == 2 {
+					w.Header().Set(strings.TrimSpace(parts[0]), strings.TrimSpace(parts[1]))
+				}
+			}
+
+			// Устанавливаем куки
+			for _, cookie := range strings.Split(cookiesLine, ";") {
+				parts := strings.SplitN(cookie, "=", 2)
+				if len(parts) == 2 {
+					http.SetCookie(w, &http.Cookie{
+						Name:  strings.TrimSpace(parts[0]),
+						Value: strings.TrimSpace(parts[1]),
+					})
+				}
+			}
+
+			// Устанавливаем код состояния
+			statusCode, err := strconv.Atoi(strings.TrimSpace(statusCodeLine))
+			if err == nil {
+				w.WriteHeader(statusCode)
+			}
+
+			// Возвращаем остальной вывод команды пользователю
+			for _, line := range outputLines[3:] {
+				if strings.TrimSpace(line) != "" {
+					fmt.Fprint(w, line+"\n")
+				}
+			}
+		}()
+
+		// Ждем завершения горутины
+		wg.Wait()
 	})
 
 	// Запуск HTTP-сервера
 	address := fmt.Sprintf("%s:%s", host, port)
 	if err := http.ListenAndServe(address, nil); err != nil {
-
 		fmt.Println("Error starting server:", err)
 	}
 }
