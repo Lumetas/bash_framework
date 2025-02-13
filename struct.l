@@ -15,11 +15,9 @@ struct.create() {
     if [[ "$item" == */ ]]; then
       # Это папка
       mkdir -p "$path/${item%/}"
-      echo "Создана папка: $path/${item%/}"
     else
       # Это файл
       touch "$path/$item"
-      echo "Создан файл: $path/$item"
     fi
   }
 
