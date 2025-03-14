@@ -1,6 +1,6 @@
 #!/bin/bash
 
-struct.create() {
+lum.struct.create() {
   local base_path="$1"
   local structure="$2"
 
@@ -49,7 +49,7 @@ struct.create() {
   done <<< "$structure"
 }
 
-struct.dump() {
+lum.struct.dump() {
   local base_path="$1"
   local indent="$2"
   
