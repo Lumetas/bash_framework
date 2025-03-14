@@ -9,15 +9,15 @@ Class test {
 				
 				declare -A obj;
 
-				json.decode obj < test.json;
+				lum.json.decode obj < test.json;
 
 				obj[key1]="key 1 value";
 
-				json.encode obj;
+				lum.json.encode obj;
 
         }f
 
 
 }c
 
-HOST=localhost PORT=8080 http_server test;
+HOST=localhost PORT=8080 lum.http.server test;
